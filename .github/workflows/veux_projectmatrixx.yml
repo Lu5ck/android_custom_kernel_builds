@@ -43,8 +43,8 @@ jobs:
     - name: "Build glibc 2.39"
       working-directory: ${{ github.workspace }}
       run: |
-          wget -c https://ftp.gnu.org/gnu/glibc/glibc-2.39.tar.gz
-          tar -zxvf glibc-2.39.tar.gz && cd glibc-2.39
+          wget -c -q https://ftp.gnu.org/gnu/glibc/glibc-2.39.tar.gz
+          tar -zxf glibc-2.39.tar.gz && cd glibc-2.39
           mkdir glibc-build && cd glibc-build
           ../configure --prefix=/opt/glibc
           make
