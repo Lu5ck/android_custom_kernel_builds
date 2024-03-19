@@ -1,3 +1,0 @@
-FROM docker.io/archlinux/archlinux:latest
-COPY projectmatrixx_veux_entrypoint.sh /projectmatrixx_veux_entrypoint.sh
-ENTRYPOINT [ "/projectmatrixx_veux_entrypoint.sh" ]
