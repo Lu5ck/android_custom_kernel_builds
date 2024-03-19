@@ -71,6 +71,3 @@ jobs:
               patchelf --add-rpath /opt/glibc/usr/lib --force-rpath --set-interpreter /opt/glibc/usr/lib/ld-linux-x86-64.so.2 "$bin"
           done
 
-      with:
-        name: Flashable Kernel
-        path: ${{ steps.build.outputs.outputfile }}
