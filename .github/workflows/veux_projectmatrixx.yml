@@ -36,6 +36,13 @@ jobs:
           sudo apt-get install -y pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl 
           sudo apt-get install -y zip unzip tar gzip bzip2 rar unrar llvm g++-multilib bison gperf zlib1g-dev automake
 
+          wget -c https://ftp.gnu.org/gnu/glibc/glibc-2.39.tar.gz
+          tar -zxvf glibc-2.39.tar.gz && cd glibc-2.39
+          mkdir glibc-build && cd glibc-build
+          ../configure --prefix=/opt/glibc
+          make
+          make install
+
     - name: "Build Kernel"
       working-directory: ${{ github.workspace }}
       run: |
