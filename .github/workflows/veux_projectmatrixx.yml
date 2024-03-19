@@ -1,0 +1,61 @@
+name: Build Project Matrixx Kernel (Veux)
+on: 
+  workflow_dispatch:
+      inputs:
+        ref:
+          type: string
+          description: reference head
+          required: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Maximize build space
+      uses: lu5ck/maximize-build-space@master
+      with:
+        remove-dotnet: true
+        remove-android: true
+        remove-haskell: true
+        remove-codeql: true
+        root-reserve-mb: 30000
+        swap-size-mb: 24576
+
+    - name: Checkout kernel source
+      uses: actions/checkout@v4
+      with:
+        repository: Lu5ck/kernel_xiaomi_sm6375
+        ref: ${{ github.event.inputs.ref }}
+
+    - name: "Install prerequisites"
+      run: |
+          sudo apt-get install -y curl git ftp lftp wget libarchive-tools ccache python2 python2-dev python3
+          sudo apt-get install -y pngcrush schedtool dpkg-dev liblz4-tool make optipng maven device-tree-compiler 
+          sudo apt-get install -y libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc
+          sudo apt-get install -y libxml2-utils libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools lzop flex tree
+          sudo apt-get install -y build-essential bc gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi libssl-dev libfl-dev
+          sudo apt-get install -y pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl 
+          sudo apt-get install -y zip unzip tar gzip bzip2 rar unrar llvm g++-multilib bison gperf zlib1g-dev automake
+
+    - name: "Build Kernel"
+      working-directory: ${{ github.workspace }}
+      run: |
+          ls
+          # Remove KSU, if any
+          sudo rm -rf "./drivers/kernelsu"
+
+          # Download latest KSU
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+
+          # Run builtin script
+          chmod +x build_kernel.sh
+          ./build_kernel.sh
+
+          cd AnyKernel3
+          outputfile="$(realpath "$(ls -d thegreatfile*)")"
+          echo "outputfile=$outputfile" >> $GITHUB_OUTPUT
+
+    - name: Generate Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Flashable Kernel
+        path: ${{ steps.build.outputs.outputfile }}
