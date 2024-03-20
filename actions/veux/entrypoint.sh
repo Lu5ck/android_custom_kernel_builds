@@ -11,7 +11,7 @@ free
 df -h
 
 echo "Updating container..."
-sudo pacman -Syu --noconfirm
+pacman -Syu --noconfirm
 
 ls
 
