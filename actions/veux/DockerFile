@@ -1,3 +1,4 @@
 FROM docker.io/library/archlinux:latest
 COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT [ "entrypoint.sh" ]
