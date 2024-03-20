@@ -33,6 +33,10 @@ chmod +x build_kernel.sh
 msg "Running Builtin script"
 ./build_kernel.sh
 
+pwd
+cd AnyKernel3
+ls
+
 msg "Getting output file"
 outputfile="$(realpath "$(ls -d Rashoumon_veux_ksu_*)")"
 echo "outputfile=$outputfile" >> $GITHUB_OUTPUT
