@@ -38,6 +38,8 @@ else
     echo "CONFIG_KSU=y" >> "$config_file"
 fi
 
+sed -i 's/^kernel\.string=.*/kernel.string=Rashoumon Kernel with KSU/' $workdir/AnyKernel3/anykernel.sh
+
 msg "Grant executable right to builtin script"
 chmod +x build_kernel.sh
 
@@ -45,11 +47,9 @@ msg "Run Builtin compile script"
 ./build_kernel.sh
 
 msg "Getting output file"
-ksu_zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
-mv $ksu_zip_file $workdir/Rashoumon_ksu_veux.zip
-ksu_zip_file=$(find $workdir -maxdepth 1 -type f -name "Rashoumon_ksu_veux*" -print -quit)
-echo "ksu_zip_file=$ksu_zip_file" >> $$GITHUB_ENV
-echo $ksu_zip_file
+zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
+rm -f $zip_file
+cp $workdir/AnyKernel3 $workdir/AnyKernel3KSU
 
 msg "Cleaning up"
 cd AnyKernel3
@@ -73,12 +73,11 @@ else
     echo "CONFIG_KSU=n" >> "$config_file"
 fi
 
+sed -i 's/^kernel\.string=.*/kernel.string=Rashoumon Kernel/' $workdir/AnyKernel3/anykernel.sh
+
 msg "Run Builtin compile script"
 ./build_kernel.sh
 
 msg "Getting output file"
-nonksu_zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
-mv $nonksu_zip_file $workdir/Rashoumon_veux.zip
-nonksu_zip_file=$(find $workdir -maxdepth 1 -type f -name "Rashoumon_veux*" -print -quit)
-echo "nonksu_zip_file=$nonksu_zip_file" >> $$GITHUB_ENV
-echo $nonksu_zip_file
+zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
+rm -f $zip_file
