@@ -64,6 +64,10 @@ fi
 
 msg "Disable KSU flag"
 sed -i '/^CONFIG_KSU=/d' "$config_file"
+if [ -d "drivers/kernelsu" ]; then
+    msg "Removing KSU"
+    rm -rf "drivers/kernelsu"
+fi
 
 sed -i 's/^kernel\.string=.*/kernel.string=Rashoumon Kernel/' $workdir/AnyKernel3/anykernel.sh
 
