@@ -32,6 +32,8 @@ msg "Enable KSU flag"
 # Check if the file contains the line "CONFIG_KSU=y"
 if grep -q "^CONFIG_KSU=n$" "$config_file"; then
     sed -i 's/^CONFIG_KSU=n$/CONFIG_KSU=y/' "$config_file"
+elif grep -q "^CONFIG_KSU=y$" "$config_file"; then
+    # Do nothing
 else
     echo "CONFIG_KSU=y" >> "$config_file"
 fi
@@ -65,6 +67,8 @@ msg "Disable KSU flag"
 # Check if the file contains the line "CONFIG_KSU=y"
 if grep -q "^CONFIG_KSU=y$" "$config_file"; then
     sed -i 's/^CONFIG_KSU=y$/CONFIG_KSU=n/' "$config_file"
+elif grep -q "^CONFIG_KSU=n$" "$config_file"; then
+    # Do nothing
 else
     echo "CONFIG_KSU=n" >> "$config_file"
 fi
