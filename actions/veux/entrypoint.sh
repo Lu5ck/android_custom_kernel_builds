@@ -1,11 +1,17 @@
 #!/usr/bin/bash
+msg(){
+    echo "===================================="
+    echo "$*"
+    echo "===================================="
+}
+
 workdir="$GITHUB_WORKSPACE"
 
 free
 df -h
 
 echo "Updating container..."
-yes | pacman -Syu
+Y | pacman -Syu
 
 ls
 
