@@ -34,7 +34,7 @@ chmod +x build_kernel.sh
 msg "Run Builtin compile script"
 ./build_kernel.sh
 
-msg "Getting output file"
+msg "Copying completed AnyKernel3-NoKSU folder"
 zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
 rm -f $zip_file
 cp -r $workdir/AnyKernel3 $workdir/AnyKernel3-NoKSU
