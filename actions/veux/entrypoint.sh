@@ -1,9 +1,7 @@
 #!/usr/bin/bash
 msg(){
     echo
-    echo
-    echo "$*"
-    echo
+    echo "==> $*"
     echo
 }
 
@@ -14,6 +12,7 @@ msg "Updating container..."
 pacman -Syu --noconfirm > /dev/null 2>&1
 
 cd source
+pwd
 workdir=$(pwd)
 
 if [ -d "drivers/kernelsu" ]; then
