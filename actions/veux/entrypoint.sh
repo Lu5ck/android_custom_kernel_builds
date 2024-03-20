@@ -30,5 +30,5 @@ cd $workdir
 msg "Grant executable right to builtin script"
 chmod +x build_kernel.sh
 
-msg "running Builtin script"
+msg "Running Builtin script"
 ./build_kernel.sh
