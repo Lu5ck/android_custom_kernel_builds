@@ -51,8 +51,8 @@ echo $ksu_zip_file
 
 msg "Cleaning up"
 cd AnyKernel3
-rm -y Image
-rm -y dtb
+rm -f Image
+rm -f dtb
 cd $workdir
 make clean
 
