@@ -21,6 +21,7 @@ config_file="$workdir/arch/arm64/configs/veux_defconfig"
 if [ -d "drivers/kernelsu" ]; then
     msg "Removing imported KSU"
     rm -rf "drivers/kernelsu"
+    sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
 fi
 
 msg "Disable KSU flag, if any"
