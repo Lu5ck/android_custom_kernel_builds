@@ -1,4 +1,4 @@
-name: Build Project Matrixx Kernel (Veux) 2
+name: Build Project Matrixx Kernel (Veux) 3
 on: 
   workflow_dispatch:
       inputs:
@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: archlinux:latest
     steps:
     - name: Maximize build space
       uses: lu5ck/maximize-build-space@master
@@ -26,3 +25,6 @@ jobs:
       with:
         repository: Lu5ck/kernel_xiaomi_sm6375
         ref: ${{ github.event.inputs.ref }}
+
+    - name: Hello Docker
+      uses: ./../actions/veux
