@@ -29,7 +29,6 @@ cd $workdir
 config_file="$workdir/arch/arm64/configs/veux_defconfig"
 
 msg "Enable KSU flag"
-# Check if the file contains the line "CONFIG_KSU=y"
 if grep -q "^CONFIG_KSU=n$" "$config_file"; then
     sed -i 's/^CONFIG_KSU=n$/CONFIG_KSU=y/' "$config_file"
 elif grep -q "^CONFIG_KSU=y$" "$config_file"; then
@@ -64,14 +63,7 @@ if [ -d "out" ]; then
 fi
 
 msg "Disable KSU flag"
-# Check if the file contains the line "CONFIG_KSU=y"
-if grep -q "^CONFIG_KSU=y$" "$config_file"; then
-    sed -i 's/^CONFIG_KSU=y$/CONFIG_KSU=n/' "$config_file"
-elif grep -q "^CONFIG_KSU=n$" "$config_file"; then
-    :
-else
-    echo "CONFIG_KSU=n" >> "$config_file"
-fi
+sed -i '/^CONFIG_KSU=/d' "$config_file"
 
 sed -i 's/^kernel\.string=.*/kernel.string=Rashoumon Kernel/' $workdir/AnyKernel3/anykernel.sh
 
