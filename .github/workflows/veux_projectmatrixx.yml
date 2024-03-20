@@ -39,10 +39,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Rashoumon_veux_ksu
-        path: ${{ github.workspace }}/source/Rashoumon_ksu_veux.zip
+        path: ${{ github.workspace }}/source/AnyKernel3KSU/*
 
     - name: Generate Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Rashoumon_veux
-        path: ${{ github.workspace }}/source/Rashoumon_veux.zip
+        path: ${{ github.workspace }}/source/AnyKernel3/*
