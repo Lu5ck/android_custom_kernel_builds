@@ -2,4 +2,4 @@ name: 'veux docker'
 description: 'Docker to build veux rashoumon kernel from project matrixx'
 runs:
   using: 'docker'
-  image: './Dockerfile'
+  image: 'DockerFile'
