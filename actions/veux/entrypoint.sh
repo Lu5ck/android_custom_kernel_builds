@@ -1,21 +1,23 @@
 #!/usr/bin/bash
 msg(){
-    echo "===================================="
+    echo
+    echo
     echo "$*"
-    echo "===================================="
+    echo
+    echo
 }
 
 free
 df -h
 
 msg "Updating container..."
-pacman -Syu --noconfirm
+pacman -Syu --noconfirm > /dev/null 2>&1
 
 cd source
-workdir=pwd
+workdir=$(pwd)
 
-msg "Removing imported KSU, if any"
 if [ -d "drivers/kernelsu" ]; then
+    msg "Removing imported KSU"
     rm -rf "drivers/kernelsu"
 fi
 
@@ -25,7 +27,8 @@ curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh
 echo $workdir
 cd $workdir
 
-msg "Grant executable rights to builtin script"
+msg "Grant executable right to builtin script"
 chmod +x build_kernel.sh
 
+msg "running Builtin script"
 build_kernel.sh
