@@ -22,12 +22,19 @@ jobs:
 
     - name: Checkout local repository
       uses: actions/checkout@v4
+      with:
+        path: builder
 
     - name: Checkout kernel source
       uses: actions/checkout@v4
       with:
         repository: Lu5ck/kernel_xiaomi_sm6375
+        path: source
         ref: ${{ github.event.inputs.ref }}
 
+    - name: Debug
+      run: |
+          ls
+
     - name: Hello Docker
-      uses: ./actions/veux
+      uses: ./builder/actions/veux
