@@ -35,4 +35,11 @@ msg "Running Builtin script"
 
 msg "Getting output file"
 outputfile=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
+mv $outputfile $workdir/AnyKernel3/Rashoumon_ksu_veux_$(date +"%Y-%m-%d").zip
+outputfile=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_ksu_veux_*" -print -quit)
 echo "outputfile=$outputfile" >> $GITHUB_OUTPUT
+echo $outputfile
+
+echo
+cd AnyKernel3
+ls
