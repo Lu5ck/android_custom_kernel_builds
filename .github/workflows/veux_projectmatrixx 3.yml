@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Maximize build space
+    - name: Maximize build space and use zram as swap
       uses: lu5ck/maximize-build-space@master
       with:
         remove-dotnet: true
