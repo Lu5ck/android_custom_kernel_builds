@@ -11,6 +11,9 @@ df -h
 msg "Updating container..."
 pacman -Syu --noconfirm > /dev/null 2>&1
 
+msg "Installing prerequisites..."
+pacman -S --noconfirm wget > /dev/null 2>&1
+
 cd source
 workdir=$(pwd)
 
