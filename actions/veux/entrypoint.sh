@@ -56,7 +56,7 @@ cd AnyKernel3
 rm -f Image
 rm -f dtb
 cd $workdir
-make clean
+make $KERNEL_CMDLINE $KERNEL_DEFCONFIG clean
 
 if [ -d "out" ]; then
     msg "Removing out folder"
