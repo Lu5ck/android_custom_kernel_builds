@@ -48,7 +48,7 @@ msg "Run Builtin compile script"
 msg "Getting output file"
 zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
 rm -f $zip_file
-cp $workdir/AnyKernel3 $workdir/AnyKernel3KSU
+cp -r $workdir/AnyKernel3 $workdir/AnyKernel3KSU
 
 msg "Cleaning up"
 cd AnyKernel3
