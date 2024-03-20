@@ -10,8 +10,10 @@ workdir="$GITHUB_WORKSPACE"
 free
 df -h
 
-echo "Updating container..."
+msg "Updating container..."
 pacman -Syu --noconfirm
+
+echo $workdir
 
 ls
 
