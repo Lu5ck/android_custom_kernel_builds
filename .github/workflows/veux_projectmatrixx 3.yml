@@ -32,9 +32,6 @@ jobs:
         path: source
         ref: ${{ github.event.inputs.ref }}
 
-    - name: Debug
-      run: |
-          ls
 
     - name: Hello Docker
-      uses: builder/actions/veux
+      uses: ./builder/actions/veux
