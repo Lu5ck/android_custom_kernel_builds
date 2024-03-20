@@ -40,9 +40,3 @@ jobs:
       with:
         name: Rashoumon_veux_ksu
         path: ${{ github.workspace }}/source/AnyKernel3/*
-
-    - name: Generate Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Rashoumon_veux
-        path: ${{ github.workspace }}/source/AnyKernel3-NoKSU/*
