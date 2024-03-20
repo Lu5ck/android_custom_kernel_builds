@@ -24,31 +24,8 @@ if [ -d "drivers/kernelsu" ]; then
     sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
 fi
 
-msg "Disable KSU flag, if any"
-sed -i '/^CONFIG_KSU=/d' "$config_file"
-
-sed -i 's/^kernel\.string=.*/kernel.string=Rashoumon Kernel/' $workdir/AnyKernel3/anykernel.sh
-
-msg "Grant executable right to builtin script"
-chmod +x build_kernel.sh
-
-msg "Run Builtin compile script"
-./build_kernel.sh
-
-msg "Copying completed AnyKernel3-NoKSU folder"
-zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
-rm -f $zip_file
-cp -r $workdir/AnyKernel3 $workdir/AnyKernel3-NoKSU
-
-msg "Cleaning up"
-rm -f $workdir/AnyKernel3/Image
-rm -f $workdir/AnyKernel3/dtb
-
-cd $workdir
-if [ -d "out" ]; then
-    msg "Removing out folder"
-    rm -rf "out"
-fi
+msg "Get latest KSU"
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
 
 msg "Enable KSU flag"
 if grep -q "^CONFIG_KSU=n$" "$config_file"; then
@@ -59,14 +36,14 @@ else
     echo "CONFIG_KSU=y" >> "$config_file"
 fi
 
-msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
-
 sed -i 's/^kernel\.string=.*/kernel.string=Rashoumon Kernel with KSU/' $workdir/AnyKernel3/anykernel.sh
+
+msg "Grant executable right to builtin script"
+chmod +x build_kernel.sh
 
 msg "Run Builtin compile script"
 ./build_kernel.sh
 
-msg "Getting output file"
+msg "Removing zip created by builtin script"
 zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
 rm -f $zip_file
