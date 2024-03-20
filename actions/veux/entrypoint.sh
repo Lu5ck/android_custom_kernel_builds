@@ -12,7 +12,7 @@ msg "Updating container..."
 pacman -Syu --noconfirm > /dev/null 2>&1
 
 msg "Installing prerequisites..."
-pacman -S --noconfirm wget make zip > /dev/null 2>&1
+pacman -S --noconfirm wget make zip tar > /dev/null 2>&1
 
 cd source
 workdir=$(pwd)
