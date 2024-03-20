@@ -26,20 +26,55 @@ msg "Get latest KSU"
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
 
 cd $workdir
+config_file="$workdir/arch/arm64/configs/veux_defconfig"
+
+msg "Enable KSU flag"
+# Check if the file contains the line "CONFIG_KSU=y"
+if grep -q "^CONFIG_KSU=n$" "$config_file"; then
+    sed -i 's/^CONFIG_KSU=n$/CONFIG_KSU=y/' "$config_file"
+else
+    echo "CONFIG_KSU=y" >> "$config_file"
+fi
 
 msg "Grant executable right to builtin script"
 chmod +x build_kernel.sh
 
-msg "Running Builtin script"
+msg "Run Builtin compile script"
 ./build_kernel.sh
 
 msg "Getting output file"
-outputfile=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
-mv $outputfile $workdir/AnyKernel3/Rashoumon_ksu_veux_$(date +"%Y-%m-%d").zip
-outputfile=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_ksu_veux_*" -print -quit)
-echo "outputfile=$outputfile" >> $GITHUB_OUTPUT
-echo $outputfile
+ksu_zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
+mv $ksu_zip_file $workdir/Rashoumon_ksu_veux.zip
+ksu_zip_file=$(find $workdir -maxdepth 1 -type f -name "Rashoumon_ksu_veux*" -print -quit)
+echo "ksu_zip_file=$ksu_zip_file" >> $$GITHUB_ENV
+echo $ksu_zip_file
 
-echo
+msg "Cleaning up"
 cd AnyKernel3
-ls
+rm -y Image
+rm -y dtb
+cd $workdir
+make clean
+
+if [ -d "out" ]; then
+    msg "Removing out folder"
+    rm -rf "out"
+fi
+
+msg "Disable KSU flag"
+# Check if the file contains the line "CONFIG_KSU=y"
+if grep -q "^CONFIG_KSU=y$" "$config_file"; then
+    sed -i 's/^CONFIG_KSU=y$/CONFIG_KSU=n/' "$config_file"
+else
+    echo "CONFIG_KSU=n" >> "$config_file"
+fi
+
+msg "Run Builtin compile script"
+./build_kernel.sh
+
+msg "Getting output file"
+nonksu_zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
+mv $nonksu_zip_file $workdir/Rashoumon_veux.zip
+nonksu_zip_file=$(find $workdir -maxdepth 1 -type f -name "Rashoumon_veux*" -print -quit)
+echo "nonksu_zip_file=$nonksu_zip_file" >> $$GITHUB_ENV
+echo $nonksu_zip_file
