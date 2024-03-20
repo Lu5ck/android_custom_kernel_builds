@@ -54,8 +54,8 @@ msg "Cleaning up"
 cd AnyKernel3
 rm -f Image
 rm -f dtb
-cd $workdir
 
+cd $workdir
 if [ -d "out" ]; then
     msg "Removing out folder"
     rm -rf "out"
