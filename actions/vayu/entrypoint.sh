@@ -44,6 +44,7 @@ KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1"
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export ARCH=arm64
 export SUBARCH=arm64
+export DISABLE_WRAPPER=1
 make $KERNEL_CMDLINE $KERNEL_DEFCONFIG
 make $KERNEL_CMDLINE -j$(nproc --all)
 
