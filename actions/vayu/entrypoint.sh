@@ -95,6 +95,7 @@ fi
 
 msg "Preparing AnyKernel3"
 cd $workdir
-ls ../AnyKernel3
-cp "out/arch/arm64/boot/Image.gz-dtb" "../AnyKernel3" || exit 1
-ls ../AnyKernel3
+if [ ! -f "out/arch/arm64/boot/Image.gz-dtb" ]; then
+    exit 3
+fi
+cp "out/arch/arm64/boot/Image.gz-dtb" "../builder/actions/vayu/AnyKernel3" || exit 1
