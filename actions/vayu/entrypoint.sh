@@ -92,6 +92,6 @@ if ! make O=out $arch_opts $make_opts $host_make_opts -j"$(nproc --all)"; then
     exit 3
 fi
 
-#Zip the kernel
+msg "Preparing AnyKernel3"
 cd $workdir
 cp out/arch/arm64/boot/Image ../AnyKernel3
