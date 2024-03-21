@@ -45,19 +45,19 @@ fi
 msg "Setup toolchain"
 downloadurl="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r498229b.tar.gz"
 echo "Downloading $downloadurl"
-wget -q $downloadurl -O /tmp/aosp-clang.tar.gz
+wget -q --no-check-certificate $downloadurl -O /tmp/aosp-clang.tar.gz
 
 downloadurl="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/heads/android12L-release.tar.gz"
 echo "Downloading $downloadurl"
-wget -q $downloadurl -O /tmp/aosp-gcc-arm64.tar.gz
+wget -q --no-check-certificate $downloadurl -O /tmp/aosp-gcc-arm64.tar.gz
 
 downloadurl="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/heads/android12L-release.tar.gz"
 echo "Downloading $downloadurl"
-wget -q $downloadurl -O /tmp/aosp-gcc-arm.tar.gz
+wget -q --no-check-certificate $downloadurl -O /tmp/aosp-gcc-arm.tar.gz
 
 downloadurl="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+archive/refs/heads/android12L-release.tar.gz"
 echo "Downloading $downloadurl"
-wget -q $downloadurl -O /tmp/aosp-gcc-host.tar.gz
+wget -q --no-check-certificate $downloadurl -O /tmp/aosp-gcc-host.tar.gz
 
 echo "Extracting toolchain"
 mkdir -p /aosp-clang /aosp-gcc-arm64 /aosp-gcc-arm /aosp-gcc-host
