@@ -32,7 +32,7 @@ jobs:
         path: source
         ref: ${{ github.event.inputs.ref }}
 
-    - name: Build Kernel in Docker (ArchLinux)
+    - name: Build Kernel in Docker (Ubuntu)
       uses: ./builder/actions/vayu
 
     - name: Generate Artifact
