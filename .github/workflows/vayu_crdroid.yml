@@ -38,5 +38,5 @@ jobs:
     - name: Generate Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Rashoumon_veux_ksu
+        name: CrDroid_vayu_ksu
         path: ${{ github.workspace }}/builder/actions/vayu/AnyKernel3/*
