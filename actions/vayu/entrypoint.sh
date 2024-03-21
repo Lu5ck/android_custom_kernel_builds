@@ -59,18 +59,20 @@ downloadurl="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/h
 echo "Downloading $downloadurl"
 wget -q $downloadurl -O /tmp/aosp-gcc-host.tar.gz
 
+echo "Extracting toolchain"
 mkdir -p /aosp-clang /aosp-gcc-arm64 /aosp-gcc-arm /aosp-gcc-host
 extract_tarball /tmp/aosp-clang.tar.gz /aosp-clang
 extract_tarball /tmp/aosp-gcc-arm64.tar.gz /aosp-gcc-arm64
 extract_tarball /tmp/aosp-gcc-arm.tar.gz /aosp-gcc-arm
 extract_tarball /tmp/aosp-gcc-host.tar.gz /aosp-gcc-host
 
+echo "Linking toolchain"
 for i in /aosp-gcc-host/bin/x86_64-linux-*; do
     ln -sf "$i" "${i/x86_64-linux-}"
 done
 
+echo "Setting path to toolchain"
 export PATH="/aosp-clang/bin:/aosp-gcc-arm64/bin:/aosp-gcc-arm/bin:/aosp-gcc-host/bin:$PATH"
-
 
 msg "Building Kernel"
 arch_opts="ARCH=arm64 SUBARCH=arm64"
