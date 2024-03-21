@@ -42,7 +42,7 @@ else
     echo "CONFIG_KSU=y" >> "$config_file"
 fi
 
-msg Setting toolchain
+msg "Setup toolchain"
 downloadurl="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r498229b.tar.gz"
 echo "Downloading $downloadurl"
 wget -q $downloadurl -O /tmp/aosp-clang.tar.gz
