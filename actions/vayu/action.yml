@@ -1,0 +1,5 @@
+name: 'vayu docker'
+description: 'Docker to build vayu crdroid kernel'
+runs:
+  using: 'docker'
+  image: 'DockerFile'
