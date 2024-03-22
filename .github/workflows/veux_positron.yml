@@ -1,0 +1,42 @@
+name: Build Positron Kernel (Veux)
+on: 
+  workflow_dispatch:
+      inputs:
+        ref:
+          type: string
+          description: reference head
+          required: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Maximize build space and use zram as swap
+      uses: lu5ck/maximize-build-space@master
+      with:
+        remove-dotnet: true
+        remove-android: true
+        remove-haskell: true
+        remove-codeql: true
+        root-reserve-mb: 30000
+        swap-size-mb: 24576
+        
+    - name: Checkout local repository
+      uses: actions/checkout@v4
+      with:
+        path: builder
+
+    - name: Checkout kernel source
+      uses: actions/checkout@v4
+      with:
+        repository: Lu5ck/kernel_xiaomi_sm6375
+        path: source
+        ref: positron
+
+    - name: Build Kernel in Docker (ArchLinux)
+      uses: ./builder/actions/veux positron
+
+    - name: Generate Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: positron_veux_ksu
+        path: ${{ github.workspace }}/builder/actions/veux positron/AnyKernel3/*
