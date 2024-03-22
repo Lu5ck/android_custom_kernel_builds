@@ -1,5 +1,5 @@
 name: 'veux docker'
-description: 'Docker to build veux rashoumon kernel from project matrixx'
+description: 'Docker to build veux poistron kernel'
 runs:
   using: 'docker'
   image: 'DockerFile'
