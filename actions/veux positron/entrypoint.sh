@@ -50,4 +50,4 @@ make $KERNEL_CMDLINE -j$(nproc --all)
 
 msg "Preparing AnyKernel3"
 cd $workdir
-cp out/arch/arm64/boot/Image "../actions/veux positron/AnyKernel3"
+cp out/arch/arm64/boot/Image "../builder/actions/veux positron/AnyKernel3"
