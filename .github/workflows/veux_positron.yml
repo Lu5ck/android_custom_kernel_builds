@@ -39,4 +39,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: positron_veux_ksu
-        path: ${{ github.workspace }}/builder/actions/veux positron/AnyKernel3/*
+        path: ${{ github.workspace }}/builder/actions/veux positron/AnyKernel3*
