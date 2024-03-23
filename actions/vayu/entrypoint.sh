@@ -31,7 +31,7 @@ if [ -d "drivers/kernelsu" ]; then
 fi
 
 msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
 
 msg "Enable KSU flag"
 if grep -q "^CONFIG_KSU=n$" "$config_file"; then
