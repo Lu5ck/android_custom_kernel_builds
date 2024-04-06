@@ -50,5 +50,5 @@ make $KERNEL_CMDLINE -j$(nproc --all)
 
 msg "Preparing AnyKernel3"
 cd $workdir
-mv arch/arm64/boot/dts/vendor/qcom/blair.dtb "../builder/actions/veux positron/AnyKernel3/dtb" || exit 1
+cp -T arch/arm64/boot/dts/vendor/qcom/blair.dtb "../builder/actions/veux positron/AnyKernel3/dtb" || exit 1
 cp out/arch/arm64/boot/Image "../builder/actions/veux positron/AnyKernel3" || exit 1
