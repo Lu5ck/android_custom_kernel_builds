@@ -47,3 +47,4 @@ msg "Run Builtin compile script"
 msg "Removing zip created by builtin script"
 zip_file=$(find $workdir/AnyKernel3 -maxdepth 1 -type f -name "Rashoumon_veux_*" -print -quit)
 rm -f $zip_file
+mv -f $workdir/arch/arm64/boot/dts/vendor/qcom/blair.dtb $workdir/AnyKernel3/dtb || exit 1
