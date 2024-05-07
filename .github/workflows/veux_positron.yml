@@ -30,7 +30,7 @@ jobs:
       with:
         repository: Lu5ck/kernel_xiaomi_sm6375
         path: source
-        ref: positron
+        ref: main
 
     - name: Build Kernel in Docker (ArchLinux)
       uses: ./builder/actions/veux positron
