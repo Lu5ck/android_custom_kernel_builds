@@ -18,14 +18,14 @@ cd source
 workdir=$(pwd)
 config_file="$workdir/arch/arm64/configs/veux_defconfig"
 
-#if [ -d "drivers/kernelsu" ]; then
-#    msg "Removing imported KSU"
-#    rm -rf "drivers/kernelsu"
-#    sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
-#fi
+if [ -d "drivers/kernelsu" ]; then
+    msg "Removing imported KSU"
+    rm -rf "drivers/kernelsu"
+    sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
+fi
 
-#msg "Get latest KSU"
-#curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
+msg "Get latest KSU"
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
 
 msg "Enable KSU flag"
 if grep -q "^CONFIG_KSU=n$" "$config_file"; then
