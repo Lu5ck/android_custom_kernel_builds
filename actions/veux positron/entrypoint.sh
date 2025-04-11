@@ -25,16 +25,17 @@ if [ -d "drivers/kernelsu" ]; then
 fi
 
 msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
+#curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
 
-msg "Enable KSU flag"
-if grep -q "^CONFIG_KSU=n$" "$config_file"; then
-    sed -i 's/^CONFIG_KSU=n$/CONFIG_KSU=y/' "$config_file"
-elif grep -q "^CONFIG_KSU=y$" "$config_file"; then
-    :
-else
-    echo "CONFIG_KSU=y" >> "$config_file"
-fi
+#msg "Enable KSU flag"
+#if grep -q "^CONFIG_KSU=n$" "$config_file"; then
+#    sed -i 's/^CONFIG_KSU=n$/CONFIG_KSU=y/' "$config_file"
+#elif grep -q "^CONFIG_KSU=y$" "$config_file"; then
+#    :
+#else
+#    echo "CONFIG_KSU=y" >> "$config_file"
+#fi
 
 msg "Downloading toolchain"
 mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
