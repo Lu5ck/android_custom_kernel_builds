@@ -28,7 +28,7 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
       with:
-        repository: Lu5ck/kernel_xiaomi_sm6375
+        repository: dereference23/kernel_xiaomi_sm6375
         path: source
         ref: main
 
