@@ -1,0 +1,5 @@
+name: 'peridot docker'
+description: 'Docker to build peridot los kernel'
+runs:
+  using: 'docker'
+  image: 'DockerFile'
