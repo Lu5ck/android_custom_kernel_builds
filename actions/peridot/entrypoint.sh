@@ -49,7 +49,7 @@ curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/he
 
 msg "Get susfs files"
 wget -q --no-check-certificate "https://gitlab.com/simonpunk/susfs4ksu/-/archive/gki-android14-6.1-dev/susfs4ksu-gki-android14-6.1-dev.tar.gz?ref_type=heads" /tmp/susfs.tar.gz
-extract_tarball /tmp/aosp-clang.tar.gz susfs
+extract_tarball /tmp/susfs.tar.gz susfs
 ls susfs
 cp -r susfs/kernel_patches/include/linux/* include/linux/
 cp -r susfs/kernel_patches/fs/* fs/
