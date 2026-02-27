@@ -39,7 +39,7 @@ fi
 msg "Downloading toolchain"
 mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
 
-KERNEL_DEFCONFIG="gki_defconfig vendor/pineapple_GKI.config vendor/peridot_GKI.config vendor/custom.config"
+KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
 KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1"
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export ARCH=arm64
