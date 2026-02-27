@@ -39,12 +39,23 @@ fi
 msg "Downloading toolchain"
 mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
 
-KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
-KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1"
+
 export PATH=$(pwd)/toolchain/bin/:$PATH
+export BUILD_CC="$(pwd)/toolchains/neutron-clang/bin/clang"
 export ARCH=arm64
 export SUBARCH=arm64
 export DISABLE_WRAPPER=1
+KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
+KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1 \
+AR=$(pwd)/toolchains/neutron-clang/bin/llvm-ar \
+NM=$(pwd)/toolchains/neutron-clang/bin/llvm-nm \
+LD=$(pwd)/toolchains/neutron-clang/bin/ld.lld \
+STRIP=$(pwd)/toolchains/neutron-clang/bin/llvm-strip \
+OBJCOPY=$(pwd)/toolchains/neutron-clang/bin/llvm-objcopy \
+OBJDUMP=$(pwd)/toolchains/neutron-clang/bin/llvm-objdump \
+READELF=$(pwd)/toolchains/neutron-clang/bin/llvm-readelf \
+HOSTCC=$(pwd)/toolchains/neutron-clang/bin/clang \
+HOSTCXX=$(pwd)/toolchains/neutron-clang/bin/clang++"
 make $KERNEL_CMDLINE $KERNEL_DEFCONFIG 
 make $KERNEL_CMDLINE -j$(nproc --all)
 
