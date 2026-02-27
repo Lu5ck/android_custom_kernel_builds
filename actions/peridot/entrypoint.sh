@@ -12,7 +12,7 @@ msg "Updating container..."
 pacman -Syu --noconfirm > /dev/null 2>&1
 
 msg "Installing prerequisites..."
-pacman -S --noconfirm curl wget git make zip tar binutils gcc flex bison bc inetutils diffutils > /dev/null 2>&1
+pacman -S --noconfirm curl wget git make zip tar binutils gcc flex bison bc inetutils diffutils libxml2-legacy > /dev/null 2>&1
 
 cd source
 workdir=$(pwd)
