@@ -45,11 +45,12 @@ if [ -d "drivers/kernelsu" ]; then
 fi
 
 msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/next-susfs-a14-6.1-dev/kernel/setup.sh" | bash -
+curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/refs/heads/next-susfs/kernel/setup.sh" | bash -s next-susfs
 
-set_config_flag CONFIG_KPROBES "$config_file"
-set_config_flag CONFIG_HAVE_KPROBES "$config_file"
-set_config_flag CONFIG_KPROBE_EVENTS "$config_file"
+#set_config_flag CONFIG_KPROBES "$config_file"
+#set_config_flag CONFIG_HAVE_KPROBES "$config_file"
+#set_config_flag CONFIG_KPROBE_EVENTS "$config_file"
+set_config_flag CONFIG_KSU "$config_file"
 set_config_flag CONFIG_KSU_SUSFS "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SUS_MOUNT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG "$config_file"
