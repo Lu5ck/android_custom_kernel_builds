@@ -62,10 +62,10 @@ set_config_flag CONFIG_KSU_SUSFS_SPOOF_UNAME "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS "$config_file"
 
 msg "Downloading toolchain"
-#mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
-wget -q --no-check-certificate https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android16-qpr2-release/clang-r574158.tar.gz -O /tmp/aosp-clang.tar.gz
-mkdir -p toolchain
-extract_tarball /tmp/aosp-clang.tar.gz toolchain
+mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
+#wget -q --no-check-certificate https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android16-qpr2-release/clang-r574158.tar.gz -O /tmp/aosp-clang.tar.gz
+#mkdir -p toolchain
+#extract_tarball /tmp/aosp-clang.tar.gz toolchain
 
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export BUILD_CC="$(pwd)/toolchain/bin/clang"
