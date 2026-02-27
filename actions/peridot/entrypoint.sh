@@ -42,14 +42,17 @@ else
 fi
 
 msg "Downloading toolchain"
-mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
+#mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
+wget -q --no-check-certificate https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android16-qpr2-release/clang-r574158.tar.gz -O /tmp/aosp-clang.tar.gz
+mkdir -p toolchain
+extract_tarball /tmp/aosp-clang.tar.gz toolchain
 
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export BUILD_CC="$(pwd)/toolchain/bin/clang"
 export ARCH=arm64
 export SUBARCH=arm64
 export DISABLE_WRAPPER=1
-KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
+KERNEL_DEFCONFIG="gki_defconfig vendor/pineapple_GKI.config vendor/peridot_GKI.config vendor/custom.config"
 KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1"
 make $KERNEL_CMDLINE $KERNEL_DEFCONFIG 
 make $KERNEL_CMDLINE -j$(nproc --all)
