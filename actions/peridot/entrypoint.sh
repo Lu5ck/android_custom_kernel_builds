@@ -52,7 +52,7 @@ export ARCH=arm64
 export SUBARCH=arm64
 export DISABLE_WRAPPER=1
 KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
-KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1"
+KERNEL_CMDLINE="CFLAGS=-std=gnu17 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1"
 make $KERNEL_CMDLINE $KERNEL_DEFCONFIG 
 make $KERNEL_CMDLINE -j$(nproc --all)
 
