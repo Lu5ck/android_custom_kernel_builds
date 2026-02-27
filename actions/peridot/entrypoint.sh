@@ -41,21 +41,21 @@ mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.
 
 
 export PATH=$(pwd)/toolchain/bin/:$PATH
-export BUILD_CC="$(pwd)/toolchain/neutron-clang/bin/clang"
+export BUILD_CC="$(pwd)/toolchain/bin/clang"
 export ARCH=arm64
 export SUBARCH=arm64
 export DISABLE_WRAPPER=1
 KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
 KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1 \
-AR=$(pwd)/toolchain/neutron-clang/bin/llvm-ar \
-NM=$(pwd)/toolchain/neutron-clang/bin/llvm-nm \
-LD=$(pwd)/toolchain/neutron-clang/bin/ld.lld \
-STRIP=$(pwd)/toolchain/neutron-clang/bin/llvm-strip \
-OBJCOPY=$(pwd)/toolchain/neutron-clang/bin/llvm-objcopy \
-OBJDUMP=$(pwd)/toolchain/neutron-clang/bin/llvm-objdump \
-READELF=$(pwd)/toolchain/neutron-clang/bin/llvm-readelf \
-HOSTCC=$(pwd)/toolchain/neutron-clang/bin/clang \
-HOSTCXX=$(pwd)/toolchain/neutron-clang/bin/clang++"
+AR=$(pwd)/toolchain/bin/llvm-ar \
+NM=$(pwd)/toolchain/bin/llvm-nm \
+LD=$(pwd)/toolchain/bin/ld.lld \
+STRIP=$(pwd)/toolchain/bin/llvm-strip \
+OBJCOPY=$(pwd)/toolchain/bin/llvm-objcopy \
+OBJDUMP=$(pwd)/toolchain/bin/llvm-objdump \
+READELF=$(pwd)/toolchain/bin/llvm-readelf \
+HOSTCC=$(pwd)/toolchain/bin/clang \
+HOSTCXX=$(pwd)/toolchain/bin/clang++"
 make $KERNEL_CMDLINE $KERNEL_DEFCONFIG 
 make $KERNEL_CMDLINE -j$(nproc --all)
 
