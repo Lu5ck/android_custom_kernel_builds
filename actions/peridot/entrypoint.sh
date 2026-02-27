@@ -48,8 +48,7 @@ msg "Get latest KSU"
 curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/dev_susfs/kernel/setup.sh" | bash -s dev_susfs
 
 msg "Get susfs files"
-wget -q --no-check-certificate https://gitlab.com/simonpunk/susfs4ksu/-/archive/gki-android14-6.1-dev/susfs4ksu-gki-android14-6.1-dev.tar.gz?ref_type=heads /tmp/susfs.tar.gz
-extract_tarball /tmp/susfs.tar.gz susfs
+git clone --depth=1 --branch gki-android14-6.1-dev https://gitlab.com/simonpunk/susfs4ksu.git susfs
 ls susfs
 cp -r susfs/kernel_patches/include/linux/* include/linux/
 cp -r susfs/kernel_patches/fs/* fs/
