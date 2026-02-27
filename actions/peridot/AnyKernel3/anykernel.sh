@@ -1,0 +1,54 @@
+### AnyKernel3 Ramdisk Mod Script
+## osm0sis @ xda-developers
+
+### AnyKernel setup
+# global properties
+properties() { '
+kernel.string=KSUN+SUSFS LOS Kernel
+do.devicecheck=1
+do.modules=0
+do.systemless=0
+do.cleanup=1
+do.cleanuponabort=0
+device.name1=peridot
+supported.versions=14 - 16
+supported.patchlevels=
+supported.vendorpatchlevels=
+'; } # end properties
+
+
+### AnyKernel install
+## boot shell variables
+block=boot
+is_slot_device=auto
+ramdisk_compression=auto
+patch_vbmeta_flag=auto
+no_magisk_check=1
+
+# import functions/variables and setup patching - see for reference (DO NOT REMOVE)
+. tools/ak3-core.sh
+
+ui_print " "
+
+kernel_version=$(strings Image | grep -E -m1 'Linux version.*#' | cut -d\\  -f3-)
+
+ui_print "Flashing KSUN+SUSFS LOS Kernel..."
+
+# boot install
+if [ -L "/dev/block/bootdevice/by-name/init_boot_a" -o -L "/dev/block/by-name/init_boot_a" ]; then
+    split_boot # for devices with init_boot ramdisk
+    flash_boot # for devices with init_boot ramdisk
+else
+    dump_boot # use split_boot to skip ramdisk unpack, e.g. for devices with init_boot ramdisk
+    write_boot # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
+fi
+
+ui_print " "
+
+ui_print "Kernel version: $kernel_version"
+
+ui_print " "
+
+ui_print "Flashed KSUN+SUSFS LOS Kernel successfully!"
+
+## end boot install
