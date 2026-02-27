@@ -1,0 +1,42 @@
+name: Build LOS Kernel (Peridot)
+on: 
+  workflow_dispatch:
+      inputs:
+        ref:
+          type: string
+          description: reference head
+          required: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Maximize build space and use zram as swap
+      uses: lu5ck/maximize-build-space@master
+      with:
+        remove-dotnet: true
+        remove-android: true
+        remove-haskell: true
+        remove-codeql: true
+        root-reserve-mb: 30000
+        swap-size-mb: 24576
+        
+    - name: Checkout local repository
+      uses: actions/checkout@v4
+      with:
+        path: builder
+
+    - name: Checkout kernel source
+      uses: actions/checkout@v5
+      with:
+        repository: Lu5ck/android_kernel_xiaomi_sm8635
+        path: source
+        ref: lineage-23.2-dev
+
+    - name: Build Kernel in Docker (ArchLinux)
+      uses: ./builder/actions/peridot
+
+    - name: Generate Artifact
+      uses: actions/upload-artifact@v6
+      with:
+        name: peridot_ksun_susfs
+        path: ${{ github.workspace }}/builder/actions/peridot/AnyKernel3/*
