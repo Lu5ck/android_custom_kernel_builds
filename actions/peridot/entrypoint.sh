@@ -11,13 +11,14 @@ set_config_flag() {
 
     msg "Enabling $flag flag"
     
-    if grep -q "^${flag}=n$" "$file"; then
-        sed -i "s/^${flag}=n$/${flag}=y/" "$file"
-    elif grep -q "^${flag}=y$" "$file"; then
-        :  # already enabled
-    else
-        echo "${flag}=y" >> "$file"
-    fi
+    #if grep -q "^${flag}=n$" "$file"; then
+    #    sed -i "s/^${flag}=n$/${flag}=y/" "$file"
+    #elif grep -q "^${flag}=y$" "$file"; then
+    #    :  # already enabled
+    #else
+    #    echo "${flag}=y" >> "$file"
+    #fi
+    echo "${flag}=y" >> "$file"
 }
 
 extract_tarball(){
