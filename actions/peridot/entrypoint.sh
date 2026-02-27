@@ -14,10 +14,10 @@ free
 df -h
 
 msg "Updating container..."
-dnf -y upgrade > /dev/null 2>&1
+pacman -Syu --noconfirm > /dev/null 2>&1
 
 msg "Installing prerequisites..."
-dnf -y install curl wget git make zip tar binutils gcc flex bison bc diffutils libxml2 python3 hostname iputils which findutils patch xz zstd glibc-devel elfutils-libelf-devel openssl-devel ncurses-devel dwarves rsync > /dev/null 2>&1
+pacman -S --noconfirm curl wget git make zip tar binutils gcc flex bison bc inetutils diffutils python3 > /dev/null 2>&1
 
 cd source
 workdir=$(pwd)
@@ -42,9 +42,7 @@ else
 fi
 
 msg "Downloading toolchain"
-wget -q --no-check-certificate https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android16-qpr2-release/clang-r574158.tar.gz -O /tmp/aosp-clang.tar.gz
-mkdir -p toolchain
-extract_tarball /tmp/aosp-clang.tar.gz toolchain
+mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
 
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export BUILD_CC="$(pwd)/toolchain/bin/clang"
