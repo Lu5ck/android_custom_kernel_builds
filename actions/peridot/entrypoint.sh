@@ -9,10 +9,10 @@ free
 df -h
 
 msg "Updating container..."
-pacman -Syu --noconfirm > /dev/null 2>&1
+dnf -y upgrade > /dev/null 2>&1
 
 msg "Installing prerequisites..."
-pacman -S --noconfirm curl wget git make zip tar binutils gcc flex bison bc inetutils diffutils libxml2-legacy python3 > /dev/null 2>&1
+dnf -y install curl wget git make zip tar binutils gcc flex bison bc diffutils libxml2 python3 hostname iputils which findutils patch xz zstd glibc-devel elfutils-libelf-devel openssl-devel ncurses-devel dwarves rsync > /dev/null 2>&1
 
 cd source
 workdir=$(pwd)
@@ -41,7 +41,6 @@ mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.
 
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export BUILD_CC="$(pwd)/toolchain/bin/clang"
-export KCFLAGS="-std=gnu17"
 export ARCH=arm64
 export SUBARCH=arm64
 export DISABLE_WRAPPER=1
