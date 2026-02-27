@@ -5,6 +5,21 @@ msg(){
     echo
 }
 
+set_config_flag() {
+    local flag="$1"
+    local file="$2"
+
+    msg "Enabling $flag flag"
+    
+    if grep -q "^${flag}=n$" "$file"; then
+        sed -i "s/^${flag}=n$/${flag}=y/" "$file"
+    elif grep -q "^${flag}=y$" "$file"; then
+        :  # already enabled
+    else
+        echo "${flag}=y" >> "$file"
+    fi
+}
+
 extract_tarball(){
     echo "Extracting $1 to $2"
     tar xf "$1" -C "$2"
@@ -32,14 +47,15 @@ fi
 msg "Get latest KSU"
 curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/next-susfs-a14-6.1-dev/kernel/setup.sh" | bash -
 
-msg "Enable KSU flag"
-if grep -q "^CONFIG_KSU=n$" "$config_file"; then
-    sed -i 's/^CONFIG_KSU=n$/CONFIG_KSU=y/' "$config_file"
-elif grep -q "^CONFIG_KSU=y$" "$config_file"; then
-    :
-else
-    echo "CONFIG_KSU=y" >> "$config_file"
-fi
+set_config_flag CONFIG_KSU_SUSFS "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SUS_MOUNT "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SUS_KSTAT "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SUS_MAP "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SUS_PATH "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SPOOF_UNAME "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS "$config_file"
 
 msg "Downloading toolchain"
 #mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
