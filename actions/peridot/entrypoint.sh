@@ -45,7 +45,7 @@ if [ -d "drivers/kernelsu" ]; then
 fi
 
 msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/refs/heads/next-susfs/kernel/setup.sh" | bash -s next-susfs
+curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/dev_susfs/kernel/setup.sh" | bash -s dev_susfs
 
 #set_config_flag CONFIG_KPROBES "$config_file"
 #set_config_flag CONFIG_HAVE_KPROBES "$config_file"
