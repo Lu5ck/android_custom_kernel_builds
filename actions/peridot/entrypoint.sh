@@ -36,7 +36,7 @@ pacman -S --noconfirm curl wget git make zip tar binutils gcc flex bison bc inet
 
 cd source
 workdir=$(pwd)
-config_file="$workdir/arch/arm64/configs/gki_defconfig"
+config_file="$workdir/arch/arm64/configs/vendor/custom.config"
 
 if [ -d "drivers/kernelsu" ]; then
     msg "Removing imported KSU"
@@ -45,7 +45,7 @@ if [ -d "drivers/kernelsu" ]; then
 fi
 
 msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/dev_susfs/kernel/setup.sh" | bash -
+curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/next-susfs-a14-6.1-dev/kernel/setup.sh" | bash -
 
 set_config_flag CONFIG_KPROBES "$config_file"
 set_config_flag CONFIG_HAVE_KPROBES "$config_file"
