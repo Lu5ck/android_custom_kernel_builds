@@ -49,7 +49,6 @@ curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/he
 
 msg "Get susfs files"
 git clone --depth=1 --branch gki-android14-6.1-dev https://gitlab.com/simonpunk/susfs4ksu.git susfs
-ls susfs
 cp -r susfs/kernel_patches/include/linux/* include/linux/
 cp -r susfs/kernel_patches/fs/* fs/
 
