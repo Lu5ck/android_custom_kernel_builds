@@ -11,14 +11,13 @@ set_config_flag() {
 
     msg "Enabling $flag flag"
     
-    #if grep -q "^${flag}=n$" "$file"; then
-    #    sed -i "s/^${flag}=n$/${flag}=y/" "$file"
-    #elif grep -q "^${flag}=y$" "$file"; then
-    #    :  # already enabled
-    #else
-    #    echo "${flag}=y" >> "$file"
-    #fi
-    echo "${flag}=y" >> "$file"
+    if grep -q "^${flag}=n$" "$file"; then
+        sed -i "s/^${flag}=n$/${flag}=y/" "$file"
+    elif grep -q "^${flag}=y$" "$file"; then
+        :  # already enabled
+    else
+        echo "${flag}=y" >> "$file"
+    fi
 }
 
 extract_tarball(){
@@ -48,6 +47,12 @@ fi
 msg "Get latest KSU"
 curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/dev_susfs/kernel/setup.sh" | bash -s dev_susfs
 
+msg "Get susfs files"
+git clone https://gitlab.com/simonpunk/susfs4ksu.git susfs
+ls susfs
+cp -r susfs/kernel_patches/include/linux/* include/linux/
+cp -r susfs/kernel_patches/fs/* fs/
+
 #set_config_flag CONFIG_KPROBES "$config_file"
 #set_config_flag CONFIG_HAVE_KPROBES "$config_file"
 #set_config_flag CONFIG_KPROBE_EVENTS "$config_file"
@@ -64,8 +69,8 @@ set_config_flag CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS "$config_file"
 
 msg "Downloading toolchain"
 #mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
-wget -q --no-check-certificate https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250129-release/Clang-20.0.0git-20250129.tar.gz -O /tmp/aosp-clang.tar.gz
-#wget -q --no-check-certificate https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android16-qpr2-release/clang-r574158.tar.gz -O /tmp/aosp-clang.tar.gz
+#wget -q --no-check-certificate https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250129-release/Clang-20.0.0git-20250129.tar.gz -O /tmp/aosp-clang.tar.gz
+wget -q --no-check-certificate https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android16-qpr2-release/clang-r574158.tar.gz -O /tmp/aosp-clang.tar.gz
 mkdir -p toolchain
 extract_tarball /tmp/aosp-clang.tar.gz toolchain
 
