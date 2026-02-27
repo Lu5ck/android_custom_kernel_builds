@@ -39,23 +39,14 @@ fi
 msg "Downloading toolchain"
 mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
 
-
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export BUILD_CC="$(pwd)/toolchain/bin/clang"
+export KCFLAGS="-std=gnu17"
 export ARCH=arm64
 export SUBARCH=arm64
 export DISABLE_WRAPPER=1
 KERNEL_DEFCONFIG="gki_defconfig vendor/peridot_GKI.config vendor/custom.config"
-KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1 \
-AR=$(pwd)/toolchain/bin/llvm-ar \
-NM=$(pwd)/toolchain/bin/llvm-nm \
-LD=$(pwd)/toolchain/bin/ld.lld \
-STRIP=$(pwd)/toolchain/bin/llvm-strip \
-OBJCOPY=$(pwd)/toolchain/bin/llvm-objcopy \
-OBJDUMP=$(pwd)/toolchain/bin/llvm-objdump \
-READELF=$(pwd)/toolchain/bin/llvm-readelf \
-HOSTCC=$(pwd)/toolchain/bin/clang \
-HOSTCXX=$(pwd)/toolchain/bin/clang++"
+KERNEL_CMDLINE="ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out LLVM=1 LLVM_IAS=1"
 make $KERNEL_CMDLINE $KERNEL_DEFCONFIG 
 make $KERNEL_CMDLINE -j$(nproc --all)
 
