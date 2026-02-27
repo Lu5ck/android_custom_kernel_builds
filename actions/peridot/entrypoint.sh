@@ -58,7 +58,7 @@ set_config_flag CONFIG_KSU_SUSFS_SUS_KSTAT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SUS_MAP "$config_file"
 #set_config_flag CONFIG_KSU_SUSFS_SUS_PATH "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SPOOF_UNAME "$config_file"
-set_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
+#set_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS "$config_file"
 
 msg "Downloading toolchain"
