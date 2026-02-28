@@ -59,13 +59,13 @@ if [ -d "drivers/kernelsu" ]; then
     sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
 fi
 
-msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/Lu5ck/KernelSU-Next/refs/heads/dev/kernel/setup.sh" | bash -s dev
+#msg "Get latest KSU"
+#curl -LSs "https://raw.githubusercontent.com/Lu5ck/KernelSU-Next/refs/heads/dev/kernel/setup.sh" | bash -s dev
 
-msg "Get susfs files"
-git clone --depth=1 --branch gki-android14-6.1-dev https://gitlab.com/simonpunk/susfs4ksu.git susfs
-cp -r susfs/kernel_patches/include/linux/* include/linux/
-cp -r susfs/kernel_patches/fs/* fs/
+#msg "Get susfs files"
+#git clone --depth=1 --branch gki-android14-6.1-dev https://gitlab.com/simonpunk/susfs4ksu.git susfs
+#cp -r susfs/kernel_patches/include/linux/* include/linux/
+#cp -r susfs/kernel_patches/fs/* fs/
 
 #set_config_flag CONFIG_KPROBES "$config_file"
 #set_config_flag CONFIG_HAVE_KPROBES "$config_file"
