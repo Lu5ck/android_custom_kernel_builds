@@ -53,11 +53,11 @@ cd source
 workdir=$(pwd)
 config_file="$workdir/arch/arm64/configs/vendor/peridot_GKI.config"
 
-if [ -d "drivers/kernelsu" ]; then
-    msg "Removing imported KSU"
-    rm -rf "drivers/kernelsu"
-    sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
-fi
+#if [ -d "drivers/kernelsu" ]; then
+#    msg "Removing imported KSU"
+#    rm -rf "drivers/kernelsu"
+#    sed -i '/^source "drivers\/kernelsu\/Kconfig"$/d' drivers/Kconfig
+#fi
 
 #msg "Get latest KSU"
 #curl -LSs "https://raw.githubusercontent.com/Lu5ck/KernelSU-Next/refs/heads/dev/kernel/setup.sh" | bash -s dev
