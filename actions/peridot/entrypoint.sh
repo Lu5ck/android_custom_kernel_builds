@@ -76,10 +76,12 @@ set_config_flag CONFIG_KSU_SUSFS_SUS_MOUNT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SUS_KSTAT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SUS_MAP "$config_file"
-#unset_config_flag CONFIG_KSU_SUSFS_SUS_PATH "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_SUS_PATH "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SPOOF_UNAME "$config_file"
-#unset_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
+set_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS "$config_file"
+
+echo "$workdir/drivers/kernelsu/Kconfig"
 
 msg "Downloading toolchain"
 #mkdir toolchain && (cd toolchain; bash <(curl -s "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman") -S)
