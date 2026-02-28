@@ -45,7 +45,7 @@ if [ -d "drivers/kernelsu" ]; then
 fi
 
 msg "Get latest KSU"
-curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/refs/heads/dev_susfs/kernel/setup.sh" | bash -s dev_susfs
+curl -LSs "https://raw.githubusercontent.com/Lu5ck/KernelSU-Next/refs/heads/dev/kernel/setup.sh" | bash -
 
 msg "Get susfs files"
 git clone --depth=1 --branch gki-android14-6.1-dev https://gitlab.com/simonpunk/susfs4ksu.git susfs
