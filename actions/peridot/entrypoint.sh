@@ -102,4 +102,4 @@ make $KERNEL_CMDLINE -j$(nproc --all)
 msg "Preparing AnyKernel3"
 cd $workdir
 ls out/arch/arm64/boot/
-cp out/arch/arm64/boot/Image.gz "../builder/actions/peridot/AnyKernel3" || exit 1
+cp out/arch/arm64/boot/Image "../builder/actions/peridot/AnyKernel3" || exit 1
