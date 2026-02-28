@@ -20,6 +20,21 @@ set_config_flag() {
     fi
 }
 
+unset_config_flag() {
+    local flag="$1"
+    local file="$2"
+
+    msg "Disabling $flag flag"
+    
+    if grep -q "^${flag}=n$" "$file"; then
+        sed -i "s/^${flag}=y$/${flag}=n/" "$file"
+    elif grep -q "^${flag}=n$" "$file"; then
+        :  # already disabled
+    else
+        echo "${flag}=n" >> "$file"
+    fi
+}
+
 extract_tarball(){
     echo "Extracting $1 to $2"
     tar xf "$1" -C "$2"
@@ -61,9 +76,9 @@ set_config_flag CONFIG_KSU_SUSFS_SUS_MOUNT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SUS_KSTAT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SUS_MAP "$config_file"
-#set_config_flag CONFIG_KSU_SUSFS_SUS_PATH "$config_file"
+unset_config_flag CONFIG_KSU_SUSFS_SUS_PATH "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_SPOOF_UNAME "$config_file"
-#set_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
+unset_config_flag CONFIG_KSU_SUSFS_OPEN_REDIRECT "$config_file"
 set_config_flag CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS "$config_file"
 
 msg "Downloading toolchain"
