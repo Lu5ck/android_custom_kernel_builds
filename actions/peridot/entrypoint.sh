@@ -89,6 +89,8 @@ wget -q --no-check-certificate https://github.com/ZyCromerZ/Clang/releases/downl
 mkdir -p toolchain
 extract_tarball /tmp/aosp-clang.tar.gz toolchain
 
+git config --global --add safe.directory /github/workspace/source
+
 export PATH=$(pwd)/toolchain/bin/:$PATH
 export BUILD_CC="$(pwd)/toolchain/bin/clang"
 export ARCH=arm64
