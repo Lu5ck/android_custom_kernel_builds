@@ -54,5 +54,5 @@ jobs:
     - name: Generate Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: peridot_ksun_susfs2
+        name: peridot_ksun_susfs
         path: ${{ github.workspace }}/builder/actions/peridot/AnyKernel3/*
