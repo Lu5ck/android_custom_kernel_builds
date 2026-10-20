@@ -20,7 +20,6 @@ jobs:
       run: |
         sudo swapoff -a
         sudo rm -f /mnt/swapfile
-        sudo apt-get install -y "linux-modules-extra-$(uname -r)"
         [ -f /dev/zram0 ] || sudo modprobe zram
         echo "Waiting 5s for zram module to initialize"
         sleep 5
