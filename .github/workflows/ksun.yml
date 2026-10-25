@@ -1,0 +1,327 @@
+name: Build APK
+
+# Builds the KernelSU-Next manager APK from ANY remote repo/branch and uploads
+# it as a workflow artifact. This file is self-contained: it does not need the
+# source repo's own workflows, so it can live in an otherwise empty repo.
+#
+# Put it at .github/workflows/build-apk.yml in your own repo, then:
+# Actions -> "Build APK" -> Run workflow -> fill in repo + branch.
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "Source repository (owner/name)"
+        type: string
+        default: "pershoot/KernelSU-Next"
+        required: true
+      ref:
+        description: "Branch, tag or commit SHA"
+        type: string
+        default: "dev-susfs"
+        required: true
+      build_lkm:
+        description: "Also build & bundle aarch64 kernel modules (slow, 16 extra jobs)"
+        type: boolean
+        default: false
+
+env:
+  SRC_REPO: ${{ inputs.repo }}
+  SRC_REF: ${{ inputs.ref }}
+  # Only needed for private repos: add a repo secret SOURCE_TOKEN (PAT with read access).
+  SRC_TOKEN: ${{ secrets.SOURCE_TOKEN || github.token }}
+  NDK_VERSION: r29
+  NIGHTLY: nightly-2026-09-23
+
+jobs:
+  # ---------------------------------------------------------------- ksuinit
+  ksuinit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: aarch64, target: aarch64-linux-android, clang: aarch64-linux-android26-clang }
+          - { arch: x86_64,  target: x86_64-linux-android,  clang: x86_64-linux-android26-clang }
+          - { arch: riscv64, target: riscv64-linux-android, clang: riscv64-linux-android35-clang }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SRC_REPO }}
+          ref: ${{ env.SRC_REF }}
+          token: ${{ env.SRC_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Rust
+        run: |
+          if [ "${{ matrix.arch }}" = "riscv64" ]; then
+            rustup toolchain install $NIGHTLY --profile minimal --component rust-src
+          else
+            rustup update stable
+            rustup target add ${{ matrix.target }}
+          fi
+
+      - uses: nttld/setup-ndk@v1
+        id: ndk
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: userspace/ksuinit
+          cache-targets: false
+
+      - name: Build ksuinit
+        env:
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
+        run: |
+          LLVM_BIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
+          export CLANG_PATH="$LLVM_BIN/${{ matrix.clang }}"
+          VAR="CARGO_TARGET_$(echo '${{ matrix.target }}' | tr 'a-z-' 'A-Z_')_LINKER"
+          export "$VAR=$CLANG_PATH"
+          BUILTINS="$($CLANG_PATH --print-resource-dir)/lib/linux/libclang_rt.builtins-${{ matrix.arch }}-android.a"
+          export RUSTFLAGS="-C target-feature=+crt-static -C link-arg=-Wl,-z,max-page-size=16384 -C link-arg=-Wno-unused-command-line-argument -C link-arg=$BUILTINS"
+          cd userspace/ksuinit
+          if [ "${{ matrix.arch }}" = "riscv64" ]; then
+            cargo +$NIGHTLY build --config ../../.github/riscv64-cargo.toml \
+              -Z build-std=std,panic_abort --target=${{ matrix.target }} --release
+          else
+            cargo build --target=${{ matrix.target }} --release
+          fi
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ksuinit-${{ matrix.arch }}
+          path: userspace/ksuinit/target/${{ matrix.target }}/release/ksuinit
+          if-no-files-found: error
+
+  # ------------------------------------------------- optional kernel modules
+  lkm:
+    if: ${{ inputs.build_lkm }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        kmi:
+          - android12-5.10
+          - android13-5.10
+          - android13-5.15
+          - android14-5.15
+          - android14-6.1
+          - android15-6.6
+          - android16-6.12
+          - android17-6.18
+    container:
+      image: ghcr.io/ylarod/ddk-min:${{ matrix.kmi }}-20260828
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SRC_REPO }}
+          ref: ${{ env.SRC_REF }}
+          token: ${{ env.SRC_TOKEN }}
+
+      - name: Build kernelsu.ko and susfs_guard_lkm.ko
+        run: |
+          set -e
+          git config --global --add safe.directory '*'
+          OUT=/github/workspace/out/aarch64
+          mkdir -p "$OUT"
+
+          (cd kernel && CONFIG_KSU=m CC=clang make)
+          cp kernel/kernelsu.ko "$OUT/${{ matrix.kmi }}_kernelsu.ko"
+
+          (cd kernel/susfs && make -k -C "$KDIR" M="$PWD" ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1 modules -j"$(nproc)")
+          cp kernel/susfs/susfs_guard_lkm.ko "$OUT/${{ matrix.kmi }}_susfs_guard_lkm.ko"
+
+          llvm-strip -d "$OUT"/*.ko
+          ls -la "$OUT"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: aarch64-${{ matrix.kmi }}-lkm
+          path: /github/workspace/out/aarch64/*.ko
+          if-no-files-found: error
+
+  # ------------------------------------------------------------------- ksud
+  ksud:
+    needs: [ksuinit, lkm]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [aarch64-linux-android, x86_64-linux-android, riscv64-linux-android]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SRC_REPO }}
+          ref: ${{ env.SRC_REF }}
+          token: ${{ env.SRC_TOKEN }}
+          fetch-depth: 0
+
+      - uses: nttld/setup-ndk@v1
+        id: ndk
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+
+      - name: Download ksuinit
+        uses: actions/download-artifact@v7
+        with:
+          pattern: ksuinit-*
+          path: _dl
+
+      - name: Download kernel modules
+        if: ${{ inputs.build_lkm }}
+        uses: actions/download-artifact@v7
+        with:
+          pattern: aarch64-*-lkm
+          path: _lkm
+
+      - name: Place prebuilt binaries
+        run: |
+          B=userspace/ksud/bin
+          for a in aarch64 x86_64 riscv64; do
+            cp _dl/ksuinit-$a/ksuinit $B/$a/ksuinit
+          done
+          if [ -d _lkm ]; then
+            find _lkm -name '*.ko' -exec cp {} $B/aarch64/ \;
+          fi
+          ls -la $B/*
+
+      - name: Setup Rust
+        run: |
+          rustup update stable
+          rustup target add aarch64-linux-android
+          if [ "${{ matrix.target }}" = "riscv64-linux-android" ]; then
+            rustup toolchain install $NIGHTLY --profile minimal --component rust-src
+          fi
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: userspace/ksud
+          cache-targets: false
+          cache-bin: false
+
+      - name: Install cross
+        run: RUSTFLAGS="" cargo install cross --git https://github.com/cross-rs/cross --rev 66845c1
+
+      - name: Assemble LKM bootstrap
+        run: |
+          clang --target=aarch64-linux-gnu -c -nostdlib \
+            -o userspace/ksud/.lkm_image_bootstrap.o \
+            userspace/ksud/src/lkm_image_bootstrap.S
+
+      - name: Build ksud
+        env:
+          NDK: ${{ steps.ndk.outputs.ndk-path }}
+        run: |
+          if [ "${{ matrix.target }}" = "riscv64-linux-android" ]; then
+            LLVM_BIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+            export CLANG_PATH="$LLVM_BIN/riscv64-linux-android35-clang"
+            export CARGO_TARGET_RISCV64_LINUX_ANDROID_LINKER="$CLANG_PATH"
+            export CC_riscv64_linux_android="$CLANG_PATH"
+            export CXX_riscv64_linux_android="${CLANG_PATH}++"
+            export AR_riscv64_linux_android="$LLVM_BIN/llvm-ar"
+            BUILTINS="$($CLANG_PATH --print-resource-dir)/lib/linux/libclang_rt.builtins-riscv64-android.a"
+            export RUSTFLAGS="-C link-arg=-Wl,-z,max-page-size=16384 -C link-arg=-Wno-unused-command-line-argument -C link-arg=$BUILTINS"
+            SYSROOT=$NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+            export BINDGEN_EXTRA_CLANG_ARGS_riscv64_linux_android="--sysroot=$SYSROOT -I$SYSROOT/usr/include/riscv64-linux-android -I$SYSROOT/usr/include"
+            cargo +$NIGHTLY build --config .github/riscv64-cargo.toml \
+              -Z build-std=std,panic_abort --target ${{ matrix.target }} --release \
+              --manifest-path ./userspace/ksud/Cargo.toml
+          else
+            CROSS_NO_WARNINGS=0 cross build --target ${{ matrix.target }} --release \
+              --manifest-path ./userspace/ksud/Cargo.toml
+          fi
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ksud-${{ matrix.target }}
+          path: userspace/ksud/target/${{ matrix.target }}/release/ksud
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------- manager
+  manager:
+    needs: ksud
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SRC_REPO }}
+          ref: ${{ env.SRC_REF }}
+          token: ${{ env.SRC_TOKEN }}
+          fetch-depth: 0 # version code/name come from git history
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v5
+
+      - name: Download ksud
+        uses: actions/download-artifact@v7
+        with:
+          pattern: ksud-*
+          path: _ksud
+
+      - name: Copy ksud into app jniLibs
+        run: |
+          for pair in "aarch64-linux-android:arm64-v8a" \
+                      "x86_64-linux-android:x86_64" \
+                      "riscv64-linux-android:riscv64"; do
+            target="${pair%%:*}"; abi="${pair##*:}"
+            mkdir -p "manager/app/src/main/jniLibs/$abi"
+            cp -f "_ksud/ksud-$target/ksud" "manager/app/src/main/jniLibs/$abi/libksud.so"
+          done
+          find manager/app/src/main/jniLibs -type f -exec ls -l {} \;
+
+      # Uses your KEYSTORE secrets if present, else a throwaway key so the APK is installable.
+      - name: Configure signing
+        working-directory: manager
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE" ]; then
+            echo "$KEYSTORE" | base64 -d > key.jks
+          else
+            echo "No KEYSTORE secret, generating a temporary signing key"
+            KEYSTORE_PASSWORD="android-ci-pass"
+            KEY_ALIAS="ci"
+            KEY_PASSWORD="$KEYSTORE_PASSWORD"
+            keytool -genkeypair -keystore key.jks -storetype PKCS12 \
+              -alias "$KEY_ALIAS" -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$KEYSTORE_PASSWORD" -keypass "$KEY_PASSWORD" \
+              -dname "CN=KernelSU Next CI"
+          fi
+          {
+            echo "KEYSTORE_FILE=key.jks"
+            echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "KEY_ALIAS=$KEY_ALIAS"
+            echo "KEY_PASSWORD=$KEY_PASSWORD"
+            echo "android.useAndroidX=true"
+            echo "org.gradle.jvmargs=-Xmx3g"
+            echo "org.gradle.parallel=true"
+            echo "android.r8.maxWorkers=4"
+          } >> gradle.properties
+
+      - name: Build release APK
+        working-directory: manager
+        run: ./gradlew clean assembleRelease --no-daemon
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: KernelSU-Next-apk
+          path: manager/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: KernelSU-Next-mappings
+          path: manager/app/build/outputs/mapping/release/
+          if-no-files-found: warn
