@@ -18,6 +18,7 @@ jobs:
     - name: Setup zram as swap
       shell: bash
       run: |
+        sudo apt-get install -y "linux-modules-extra-$(uname -r)"
         sudo swapoff -a
         sudo rm -f /mnt/swapfile
         [ -f /dev/zram0 ] || sudo modprobe zram
